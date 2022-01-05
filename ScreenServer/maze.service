@@ -1,0 +1,15 @@
+# Maze RBG LED 32x32 service
+
+[Unit]
+Description=Maze RGB LED system screen server
+After=multi-user.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/usr/local/rgbScreenServer/rgbScreenServer.py
+
+[Install]
+WantedBy=graphical.target
