@@ -30,8 +30,22 @@ class ScreenServer(SampleBase):
     def __init__(self, *args, **kwargs):
         super(ScreenServer, self).__init__(*args, **kwargs)
 
-    def drawPixel(self, pixel):
+    def drawPixel(self, pixel: Pixel):
         self.matrix.SetPixel(pixel.coordinate.x, pixel.coordinate.y, pixel.color.r, pixel.color.g, pixel.color.b)
+
+    def redrawPixels(self, pixels: list):
+        new_canvas = self.matrix.CreateFrameCanvas()
+
+        for pixel_dat in pixels:
+            new_canvas.SetPixel(
+                pixel_dat["coordinate"]["x"],
+                pixel_dat["coordinate"]["y"],
+                pixel_dat["color"]["r"],
+                pixel_dat["color"]["g"],
+                pixel_dat["color"]["b"]
+            )
+
+        new_canvas = self.matrix.SwapOnVSync(new_canvas)
 
 
     def jsonHandler(self, msg):
@@ -55,6 +69,10 @@ class ScreenServer(SampleBase):
             pixel = Pixel(coord, color)
 
             self.drawPixel(pixel)
+        elif dat["type"] == "redraw":
+            pixels = dat["pixels"]
+            # pprint(pixels)
+            self.redrawPixels(pixels)
 
 
     def messageHandler(self, ch, method, properties, body):

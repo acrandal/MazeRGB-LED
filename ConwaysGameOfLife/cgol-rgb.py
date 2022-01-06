@@ -317,6 +317,22 @@ class RMQWrapper():
                     #print(msg)
                     self.publish(msg)
 
+    def sendScreenCellsRedraw(self, screenCells):
+        dat = {
+            "type": "redraw",
+            "pixels": []
+            }
+        for x in range(len(screenCells)):
+            for y in range(len(screenCells[0])):
+                if screenCells[x][y].isLive():
+                    cell = screenCells[x][y]
+                    color = cell.getColor()
+                    pixel = Pixel(x, y, color.r, color.g, color.b)
+                    dat["pixels"].append(pixel.getDat())
+        msg = json.dumps(dat)
+        self.publish(msg)
+
+
 
 # ****************************************************************************
 def cls():
@@ -337,7 +353,7 @@ if __name__ == "__main__":
         world.handleStuck()
 
         screenCells = world.getScreenCells(3, 3, 32, 32)
-        rmq.sendScreenCells(screenCells)
+        rmq.sendScreenCellsRedraw(screenCells)
 
         sleep(1)
 
