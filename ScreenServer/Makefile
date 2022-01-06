@@ -6,6 +6,7 @@ install:
 	cp maze.service $(SYSTEMD_DIR)/
 	mkdir -p $(INSTALL_DIR)
 	cp rgbScreenServer.py samplebase.py $(INSTALL_DIR)/
+	systemctl daemon-reload
 
 restart:
 	service maze restart
