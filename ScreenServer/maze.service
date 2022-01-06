@@ -9,7 +9,7 @@ Type=simple
 Restart=always
 RestartSec=1
 User=root
-ExecStart=/usr/local/rgbScreenServer/rgbScreenServer.py
+ExecStart=/usr/local/rgbScreenServer/rgbScreenServer.py --led-brightness 50
 
 [Install]
 WantedBy=graphical.target
