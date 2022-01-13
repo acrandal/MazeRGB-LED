@@ -2,7 +2,8 @@
 
 [Unit]
 Description=Maze RGB LED system screen server
-After=multi-user.target
+After=rabbitmq-server.service
+Requires=rabbitmq-server.service
 
 [Service]
 Type=simple
@@ -11,5 +12,5 @@ RestartSec=1
 User=root
 ExecStart=/usr/local/rgbScreenServer/rgbScreenServer.py --led-brightness 50
 
-[Install]
-WantedBy=graphical.target
+#[Install]
+#WantedBy=graphical.target

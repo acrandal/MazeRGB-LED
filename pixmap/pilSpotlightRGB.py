@@ -8,7 +8,7 @@ import json
 from pprint import pprint
 
 minTick = 0.3
-sleepDelay = 0.01
+sleepDelay = 0.25
 
 xTick = 1.0
 yTick = 1.0 
@@ -62,6 +62,9 @@ def flipDir(tick):
 # ****************************************************************************
 class RMQWrapper():
     def __init__(self):
+        self.setupRMQ()
+
+    def setupRMQ(self):
         print("Connecting to RMQ server -- ", end='')
         self.queueName = "MazeScreen"
         self.connection = pika.BlockingConnection(
@@ -71,7 +74,11 @@ class RMQWrapper():
         print("Connected.")
 
     def publish(self, msg):
-        self.channel.basic_publish(exchange='', routing_key=self.queueName, body=msg)
+        try:
+            self.channel.basic_publish(exchange='', routing_key=self.queueName, body=msg)
+        except pika.exceptions.StreamLostError as e:
+            pprint(e)
+            self.setupRMQ()
 
     def close(self):
         self.connection.close()

@@ -34,10 +34,10 @@ class ScreenServer(SampleBase):
         self.matrix.SetPixel(pixel.coordinate.x, pixel.coordinate.y, pixel.color.r, pixel.color.g, pixel.color.b)
 
     def redrawPixels(self, pixels: list):
-        new_canvas = self.matrix.CreateFrameCanvas()
+        # new_canvas = self.matrix.CreateFrameCanvas()
 
         for pixel_dat in pixels:
-            new_canvas.SetPixel(
+            self.new_canvas.SetPixel(
                 pixel_dat["coordinate"]["x"],
                 pixel_dat["coordinate"]["y"],
                 pixel_dat["color"]["r"],
@@ -45,7 +45,7 @@ class ScreenServer(SampleBase):
                 pixel_dat["color"]["b"]
             )
 
-        new_canvas = self.matrix.SwapOnVSync(new_canvas)
+        self.new_canvas = self.matrix.SwapOnVSync(self.new_canvas)
 
 
     def jsonHandler(self, msg):
@@ -84,9 +84,12 @@ class ScreenServer(SampleBase):
 
 
     def run(self):
+        self.new_canvas = self.matrix.CreateFrameCanvas()
+
         queueName = 'MazeScreen'
         connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
         channel = connection.channel()
+        channel.queue_declare(queue=queueName)
 
         channel.basic_consume(queue=queueName, on_message_callback=self.messageHandler, auto_ack=True)
 
